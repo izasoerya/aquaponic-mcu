@@ -7,6 +7,8 @@
 #include "sensor/configs/ds18b20_sensor.h"
 #include "sensor/configs/bh1750_sensor.h"
 #include "sensor/configs/ultrasonic_sensor.h"
+#include "sensor/configs/ph_dfrobot_sensor.h"
+#include "sensor/configs/tds_dfrobot_sensor.h"
 
 #include "transmitter/configs/lora.h"
 #include "transmitter/configs/wifi_module.h"
@@ -40,8 +42,8 @@
 #define ADDRESS_ADS1115 0x48 // TODO: CHANGE TO ACTUAL ADDRESS
 #define ADDRESS_OLED 0x3C    // TODO: CHANGE TO ACTUAL ADDRESS
 
-const char *ssid = "Subhanallah 4G";
-const char *password = "muhammadnabiyullah";
+const char *ssid = "faizareborn";
+const char *password = "faiza221977";
 // const char *hostName = "ws-brin-bandung-1";
 const char *blynkAuthToken = "d2oR-C4x_VlT26WNVydzEKntp-865JkX";
 WiFiBlynk blynk(
@@ -58,14 +60,14 @@ WiFiBlynk blynk(
             Serial.printf("Air Pump ON Pin %d, %d\n", PIN_AIR_PUMP, state);
     });
 
-// MockDisplayOLED display(&Wire, ADDRESS_OLED);
+MockDisplayOLED display(&Wire, ADDRESS_OLED);
 
 OneWire onewire(PIN_DS18);
 ADS1115Module ads(ADS1115_ADDRESS, &Wire);
 
 MockDS18B20Sensor waterTemperatureSensor(1, "Water Temp Analog", &onewire);
-MockADSSensor waterPhSensor(1, "Water Ph Analog", 1, &ads);
-MockADSSensor tdsSensor(1, "TDS Analog", 1, &ads);
+MockPHDFRobotSensor phSensor(1, "PH DFRobot", 0, &ads);
+MockTDSDFRobotSensor tdsSensor(1, "TDS DFRobot", &waterTemperatureSensor, 1, &ads);
 MockUltrasonicSensor waterLevelSensor(1, "Water Level Analog", PIN_ECHO, PIN_TRIG);
 MockBH1750Sensor lightIntensitySensor(1, "Light Intensity Analog", &Wire, ADDRESS_BH1750);
 
@@ -76,10 +78,12 @@ void setup()
     Serial.begin(115200);
     blynk.begin();
 
-    // display.begin();
+    display.begin();
 
     // ads.begin(ADS1X15_GAIN_4096MV);
     // Wire.begin(PIN_SDA, PIN_SCL);
+    tdsSensor.begin();
+    phSensor.begin();
     waterTemperatureSensor.begin();
     waterLevelSensor.begin();
     lightIntensitySensor.begin();
@@ -88,19 +92,21 @@ void setup()
 void loop()
 {
     blynk.run();
+    tdsSensor.update();
+    phSensor.update();
 
     if (millis() - prevBlynkSensor > 30000)
     {
         blynk.send(BLYNK_AMBIENT_LIGHT_PIN, lightIntensitySensor.read());
         blynk.send(BLYNK_WATER_LEVEL_PIN, waterLevelSensor.read());
-        blynk.send(BLYNK_WATER_PH_PIN, waterPhSensor.read());
+        blynk.send(BLYNK_WATER_PH_PIN, phSensor.read());
         blynk.send(BLYNK_WATER_TEMPERATURE_PIN, waterTemperatureSensor.read());
         blynk.send(BLYNK_TDS_PIN, tdsSensor.read());
 
-        // char buffer[64];
-        // snprintf(buffer, sizeof(buffer),
-        //          "Water Level: %.1f", waterLevelSensor.read());
-        // display.showMessage(buffer);
+        char buffer[64];
+        snprintf(buffer, sizeof(buffer),
+                 "Water Level: %.1f", waterLevelSensor.read());
+        display.showMessage(buffer);
 
         prevBlynkSensor = millis();
     }
