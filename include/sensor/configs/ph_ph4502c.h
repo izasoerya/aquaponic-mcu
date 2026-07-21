@@ -25,13 +25,13 @@ public:
     PH4502CSensor(
         unsigned char id, const char *name,
         uint8_t channelADS, ADS1115Module *ads,
-        BaseFilter *filter = nullptr, BaseSensor *temperatureSensor)
+        BaseFilter *filter = nullptr, BaseSensor *temperatureSensor = nullptr)
         : BaseSensor(id, name), _channelADS(channelADS), _ads(ads),
           _filter(filter), _temperatureSensor(temperatureSensor) {}
 
     PH4502CSensor(
         unsigned char id, const char *name,
-        uint8_t pinAnalog, BaseFilter *filter = nullptr, BaseSensor *temperatureSensor)
+        uint8_t pinAnalog, BaseFilter *filter = nullptr, BaseSensor *temperatureSensor = nullptr)
         : BaseSensor(id, name), _pinAnalog(pinAnalog),
           _filter(filter), _temperatureSensor(temperatureSensor) {}
 
