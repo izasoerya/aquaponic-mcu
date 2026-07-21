@@ -19,17 +19,21 @@ private:
     ADS1115Module *_ads = nullptr;
 
     BaseFilter *_filter = nullptr;
+    BaseSensor *_temperatureSensor = nullptr;
 
 public:
     PH4502CSensor(
         unsigned char id, const char *name,
-        uint8_t channelADS, ADS1115Module *ads, BaseFilter *filter = nullptr)
-        : BaseSensor(id, name), _channelADS(channelADS), _ads(ads), _filter(filter) {}
+        uint8_t channelADS, ADS1115Module *ads,
+        BaseFilter *filter = nullptr, BaseSensor *temperatureSensor)
+        : BaseSensor(id, name), _channelADS(channelADS), _ads(ads),
+          _filter(filter), _temperatureSensor(temperatureSensor) {}
 
     PH4502CSensor(
         unsigned char id, const char *name,
-        uint8_t pinAnalog, BaseFilter *filter = nullptr)
-        : BaseSensor(id, name), _pinAnalog(pinAnalog), _filter(filter) {}
+        uint8_t pinAnalog, BaseFilter *filter = nullptr, BaseSensor *temperatureSensor)
+        : BaseSensor(id, name), _pinAnalog(pinAnalog),
+          _filter(filter), _temperatureSensor(temperatureSensor) {}
 
     ~PH4502CSensor() override = default;
 
@@ -58,7 +62,9 @@ public:
             _filter->filter(val);
         float averageVoltage = val * (float)_vref / _adcResolution;
 
-        float pHValue = 7.0 + ((2.5 - averageVoltage) / 0.18);
+        float pHValue = _temperatureSensor != nullptr
+                            ? (7.0 + ((2.5 - averageVoltage) / 0.18)) + (_temperatureSensor->read() - 25.0) * 0.03
+                            : (7.0 + ((2.5 - averageVoltage) / 0.18));
         return pHValue;
     }
 };
