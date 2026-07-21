@@ -14,6 +14,9 @@
 #include "sensor/configs/ultrasonic_sensor.h"
 #include "sensor/configs/ph_dfrobot_sensor.h"
 #include "sensor/configs/tds_dfrobot_sensor.h"
+#include "sensor/configs/ph_ph4502c.h"
+
+#include "sensor/filters/moving_average.h"
 
 #include "transmitter/configs/lora.h"
 #include "transmitter/configs/wifi_module.h"
@@ -72,7 +75,9 @@ OneWire onewire(PIN_DS18);
 ADS1115Module ads(ADS1115_ADDRESS, &Wire);
 
 MockDS18B20Sensor waterTemperatureSensor(1, "Water Temp Analog", &onewire);
-MockPHDFRobotSensor phSensor(1, "PH DFRobot", 0, &ads);
+// MockPHDFRobotSensor phSensor(1, "PH DFRobot", 0, &ads);
+MovingAverageFilter filterPH;
+MockPH4502CSensor phSensor(1, "PH Sensor", 1, &ads, &filterPH);
 MockTDSDFRobotSensor tdsSensor(1, "TDS DFRobot", &waterTemperatureSensor, 1, &ads);
 MockUltrasonicSensor waterLevelSensor(1, "Water Level Analog", PIN_ECHO, PIN_TRIG);
 MockBH1750Sensor lightIntensitySensor(1, "Light Intensity Analog", &Wire, ADDRESS_BH1750);
