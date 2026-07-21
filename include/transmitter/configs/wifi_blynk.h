@@ -2,6 +2,7 @@
 #define WIFI_BLYNK
 
 #include <BlynkSimpleEsp32.h>
+#include "../lib/wifi_bundle/wifi_bundle.h"
 
 class WiFiBlynk;
 
@@ -15,21 +16,35 @@ class WiFiBlynk
 {
 private:
     const char *_authToken;
-    const char *_ssid;
-    const char *_password;
+    const char *_hostname;
+
     std::function<void(int, bool)> _callback;
+    WiFiBundle _wifi;
+
+    bool _setupMDNS()
+    {
+        if (!MDNS.begin(_hostname))
+            return false;
+        MDNS.addService("http", "tcp", 80);
+        return true;
+    }
 
 public:
-    WiFiBlynk(const char *authToken, const char *ssid, const char *password, std::function<void(int, bool)> callback)
-        : _authToken(authToken), _ssid(ssid), _password(password), _callback(callback)
+    WiFiBlynk(const char *authToken, const char *ssid, const char *password, const char *hostname, std::function<void(int, bool)> callback)
+        : _authToken(authToken), _hostname(hostname),
+          _wifi(WiFiBundle(ssid, password, hostname)),
+          _callback(callback)
     {
         wifiBlynkInstance() = this;
     }
     ~WiFiBlynk() {}
 
-    void begin()
+    bool begin()
     {
-        Blynk.begin(_authToken, _ssid, _password);
+        _wifi.begin();
+        Blynk.config(_authToken);
+        Blynk.connect();
+        return true;
     }
 
     void send(uint8_t virtualPin, float value)
@@ -45,6 +60,11 @@ public:
     void onCallback(uint8_t pin, bool value)
     {
         _callback(pin, value);
+    }
+
+    void reconnect()
+    {
+        _wifi.reconnect();
     }
 };
 
