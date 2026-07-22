@@ -3,20 +3,30 @@
 
 #include "base_filter.h"
 
+/**
+ * @brief Moving Average Filter (Max window: 50)
+ *
+ * @param uint8_t window_size
+ */
 class MovingAverageFilter : public BaseFilter
 {
 private:
-    float *_buffer;
+    static const uint8_t MAX_WINDOW = 50;
+    float _buffer[MAX_WINDOW];
     uint8_t _windowSize;
     uint8_t _index = 0;
 
 public:
-    MovingAverageFilter(uint8_t windowSize = 10) : _windowSize(windowSize), _buffer(new float[_windowSize])
+    MovingAverageFilter(uint8_t windowSize = 10)
+        : _windowSize(windowSize)
     {
+        if (_windowSize > MAX_WINDOW)
+            _windowSize = MAX_WINDOW;
+
         for (uint8_t i = 0; i < _windowSize; i++)
             _buffer[i] = 0;
     }
-    ~MovingAverageFilter() override { delete[] _buffer; }
+    ~MovingAverageFilter() override = default;
 
     void filter(float &raw) override
     {
@@ -30,22 +40,33 @@ public:
     }
 };
 
+/**
+ * @brief Moving average filter with trimming the biggest and smallest number
+ * based on trim count (Max window: 50)
+ *
+ * @param uint8_t window_size
+ * @param uint8_t trim_size
+ */
 class TrimmedMovingAverage : public BaseFilter
 {
 private:
-    float *_buffer;
+    static const uint8_t MAX_WINDOW = 50;
+    float _buffer[MAX_WINDOW];
     uint8_t _windowSize;
     uint8_t _trim;
     uint8_t _index = 0;
 
 public:
     TrimmedMovingAverage(uint8_t windowSize = 20, uint8_t trim = 5)
-        : _windowSize(windowSize), _trim(trim), _buffer(new float[_windowSize])
+        : _windowSize(windowSize), _trim(trim)
     {
+        if (_windowSize > MAX_WINDOW)
+            _windowSize = MAX_WINDOW;
+
         for (uint8_t i = 0; i < _windowSize; i++)
             _buffer[i] = 0;
     }
-    ~TrimmedMovingAverage() override { delete[] _buffer; }
+    ~TrimmedMovingAverage() override = default;
 
     void filter(float &raw) override
     {
@@ -55,7 +76,7 @@ public:
             for (int j = i + 1; j < _windowSize; j++)
                 if (_buffer[i] > _buffer[j])
                 {
-                    int t = _buffer[i];
+                    float t = _buffer[i];
                     _buffer[i] = _buffer[j];
                     _buffer[j] = t;
                 }
