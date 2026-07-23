@@ -72,18 +72,14 @@ public:
     {
         _buffer[_index] = raw;
         _index = (_index + 1) % _windowSize;
-        for (int i = 0; i < _windowSize - 1; i++)
-            for (int j = i + 1; j < _windowSize; j++)
-                if (_buffer[i] > _buffer[j])
-                {
-                    float t = _buffer[i];
-                    _buffer[i] = _buffer[j];
-                    _buffer[j] = t;
-                }
+
+        float _sortBuffer[_windowSize]; // May cause stack overflow if too big
+        memcpy(_sortBuffer, _buffer, _windowSize * sizeof(float));
+        std::sort(_sortBuffer, _sortBuffer + _windowSize);
 
         double sum = 0;
         for (int i = _trim; i < _windowSize - _trim; i++)
-            sum += _buffer[i];
+            sum += _sortBuffer[i];
         raw = sum / (_windowSize - 2 * _trim);
     }
 };
