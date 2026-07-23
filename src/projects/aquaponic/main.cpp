@@ -139,7 +139,7 @@ void loop()
 
     if (millis() - prevBlynkSensor > 30000)
     {
-        SensorEntity sensor{
+        AquaponicSensorEntity sensor{
             .lightIntensity = uint16_t(lightIntensitySensor.read()),
             .waterLevel = waterLevelSensor.read(),
             .waterPH = phSensor.read(),
@@ -149,7 +149,7 @@ void loop()
         const char *sensorString = sensor.toString();
         WebSerial.println(sensorString);
 
-        SystemEntity system{
+        AquaponicSystemEntity system{
             .freeHeap = ESP.getFreeHeap(),
             .largestFreeBlock = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT),
             .minFreeHeap = ESP.getMinFreeHeap(),

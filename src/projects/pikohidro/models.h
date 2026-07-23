@@ -4,25 +4,24 @@
 #include <Arduino.h>
 #include "../utils/parser.h"
 
-struct SensorEntity
+struct PikohidroSensorEntity
 {
-    uint16_t lightIntensity;
-    float waterLevel;
+    float waterTurbidity;
     float waterPH;
-    float waterTemperature;
+    float temperature;
     float waterTDS;
 
     const char *toString()
     {
         static char buffer[128];
         snprintf(buffer, sizeof(buffer),
-                 "Level: %.1f\nPH: %.2f\nTemperature: %.1f\nTDS: %.1f\nLux: %d",
-                 waterLevel, waterPH, waterTemperature, waterTDS, lightIntensity);
+                 "Level: %.1f\nPH: %.2f\nTemperature: %.1f\nTDS: %.1f",
+                 waterTurbidity, waterPH, temperature, waterTDS);
         return buffer;
     }
 };
 
-struct SystemEntity
+struct PikohidroSystemEntity
 {
     uint32_t freeHeap;
     uint32_t largestFreeBlock;

@@ -106,28 +106,28 @@ void loop()
 
     if (millis() - prevBlynkSensor > 30000)
     {
-        // SensorEntity sensor{
-        //     .waterTurbidity = turbiditySensor.read(),
-        //     .waterPH = phSensor.read(),
-        //     .waterTDS = tdsSensor.read(),
-        //     .temperature = phTemperatureSensor.read(),
-        // };
-        // const char *sensorString = sensor.toString();
-        // WebSerial.println(sensorString);
+        PikohidroSensorEntity sensor{
+            .waterTurbidity = turbiditySensor.read(),
+            .waterPH = phSensor.read(),
+            .temperature = phTemperatureSensor.read(),
+            .waterTDS = tdsSensor.read(),
+        };
+        const char *sensorString = sensor.toString();
+        WebSerial.println(sensorString);
 
-        // SystemEntity system{
-        //     .freeHeap = ESP.getFreeHeap(),
-        //     .largestFreeBlock = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT),
-        //     .minFreeHeap = ESP.getMinFreeHeap(),
-        //     .lastResetReason = esp_reset_reason(),
-        // };
-        // const char *systemString = system.toString();
-        // WebSerial.println(systemString);
+        PikohidroSystemEntity system{
+            .freeHeap = ESP.getFreeHeap(),
+            .largestFreeBlock = heap_caps_get_largest_free_block(MALLOC_CAP_DEFAULT),
+            .minFreeHeap = ESP.getMinFreeHeap(),
+            .lastResetReason = esp_reset_reason(),
+        };
+        const char *systemString = system.toString();
+        WebSerial.println(systemString);
 
-        blynk.send(BLYNK_TURBIDITY_PIN, turbiditySensor.read());
-        blynk.send(BLYNK_WATER_PH_PIN, phSensor.read());
-        blynk.send(BLYNK_TDS_PIN, tdsSensor.read());
-        blynk.send(BLYNK_TEMPERATURE_PIN, phTemperatureSensor.read());
+        blynk.send(BLYNK_TURBIDITY_PIN, sensor.waterTurbidity);
+        blynk.send(BLYNK_WATER_PH_PIN, sensor.waterPH);
+        blynk.send(BLYNK_TDS_PIN, sensor.waterTDS);
+        blynk.send(BLYNK_TEMPERATURE_PIN, sensor.temperature);
 
         prevBlynkSensor = millis();
     }
