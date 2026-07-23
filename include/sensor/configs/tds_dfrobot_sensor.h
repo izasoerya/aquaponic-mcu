@@ -6,12 +6,13 @@
 #include "ads_sensor.h"
 
 /**
- * @brief TDS DFROBOT Sensor Class
+ * @brief Mock TDS DFROBOT Sensor Class.
+ * You can assign either ads object or pin analog
  *
  * @param uint8_t channelADS
- * @param ADS1115Module *ads
- * @param BaseFilter *filter
- * @param BaseSensor *temperatureSensor
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
  */
 class TDSDFRobotSensor : public BaseSensor
 {
@@ -85,12 +86,13 @@ public:
 };
 
 /**
- * @brief TDS DFROBOT Sensor Class
+ * @brief Mock TDS DFROBOT Sensor Class.
+ * You can assign either ads object or pin analog
  *
  * @param uint8_t channelADS
- * @param ADS1115Module *ads
- * @param BaseFilter *filter
- * @param BaseSensor *temperatureSensor
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
  */
 class MockTDSDFRobotSensor : public BaseSensor
 {
