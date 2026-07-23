@@ -5,6 +5,15 @@
 #include "ads_sensor.h"
 #include "../filters/base_filter.h"
 
+/**
+ * @brief Mock PH 4502C Sensor Class.
+ * You can assign either ads object or pin analog
+ *
+ * @param uint8_t channelADS
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
+ */
 class PH4502CSensor : public BaseSensor
 {
 private:
@@ -69,6 +78,15 @@ public:
     }
 };
 
+/**
+ * @brief Mock PH 4502C Sensor Class.
+ * You can assign either ads object or pin analog
+ *
+ * @param uint8_t channelADS
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
+ */
 class MockPH4502CSensor : public BaseSensor
 {
 private:

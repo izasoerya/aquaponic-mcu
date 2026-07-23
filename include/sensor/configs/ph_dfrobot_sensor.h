@@ -9,9 +9,9 @@
  * @brief TDS DFROBOT Sensor Class
  *
  * @param uint8_t channelADS
- * @param ADS1115Module *ads
- * @param BaseFilter *filter
- * @param BaseSensor *temperatureSensor
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
  */
 class PHDFRobotSensor : public BaseSensor
 {
@@ -81,9 +81,9 @@ public:
  * @brief TDS DFROBOT Sensor Class
  *
  * @param uint8_t channelADS
- * @param ADS1115Module *ads
- * @param BaseFilter *filter
- * @param BaseSensor *temperatureSensor
+ * @param *ADS1115Module ads
+ * @param *BaseFilter filter
+ * @param *BaseSensor temperatureSensor
  */
 class MockPHDFRobotSensor : public BaseSensor
 {
