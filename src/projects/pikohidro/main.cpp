@@ -48,7 +48,10 @@ MockADSSensor turbiditySensor(
     1, "Turbidity Sensor",
     ADS_CHANNEL_TURBIDITY, &ads,
     [](float value) -> float
-    { return value * 3.3 / 4095.0 * 100.0; }); // TODO: CHANGE ACCRODING TO DATASHEET
+    {
+        float voltage = value * 3.3 / 4095.0;
+        return pow(voltage, 2) * 1120.4 + (5742.3 * voltage) - 4352.9; // Formula from DFRobot
+    });
 
 MockADSSensor phTemperatureSensor(
     1, "PH Temperature Sensor",
