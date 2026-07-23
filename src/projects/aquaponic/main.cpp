@@ -80,11 +80,6 @@ MockPHDFRobotSensor phSensor(
     1, "PH DFRobot",
     ADS_CHANNEL_PH, &ads);
 
-MockTDSDFRobotSensor tdsSensor(
-    1, "TDS DFRobot",
-    ADS_CHANNEL_TDS, &ads,
-    &waterTemperatureSensor);
-
 MockUltrasonicSensor waterLevelSensor(
     1, "Water Level",
     PIN_ECHO, PIN_TRIG);
@@ -92,6 +87,12 @@ MockUltrasonicSensor waterLevelSensor(
 MockBH1750Sensor lightIntensitySensor(
     1, "Light Intensity",
     &Wire, ADDRESS_BH1750);
+
+TrimmedMovingAverage filterTDS(20, 5);
+MockTDSDFRobotSensor tdsSensor(
+    1, "TDS DFRobot",
+    ADS_CHANNEL_TDS, &ads,
+    &filterTDS, &waterTemperatureSensor);
 
 AppState state = AppState::NORMAL_MODE;
 uint64_t prevBlynkSensor = 0;

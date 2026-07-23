@@ -2,8 +2,17 @@
 #define TDS_DFROBOT_SENSOR_H
 
 #include "../base_sensor.h"
+#include "../filters/base_filter.h"
 #include "ads_sensor.h"
 
+/**
+ * @brief TDS DFROBOT Sensor Class
+ *
+ * @param uint8_t channelADS
+ * @param ADS1115Module *ads
+ * @param BaseFilter *filter
+ * @param BaseSensor *temperatureSensor
+ */
 class TDSDFRobotSensor : public BaseSensor
 {
 private:
@@ -75,6 +84,14 @@ public:
     }
 };
 
+/**
+ * @brief TDS DFROBOT Sensor Class
+ *
+ * @param uint8_t channelADS
+ * @param ADS1115Module *ads
+ * @param BaseFilter *filter
+ * @param BaseSensor *temperatureSensor
+ */
 class MockTDSDFRobotSensor : public BaseSensor
 {
 private:
